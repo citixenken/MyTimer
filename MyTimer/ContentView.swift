@@ -8,33 +8,41 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var timerMode: TimerMode = .paused
+    //@State private var timerMode: TimerMode = .paused
     @State private var selectedPicker = 0
     let availableMinutes = Array(1...59)
+    
+    @ObservedObject var timerManager: TimerManager
     
     var body: some View {
         NavigationView {
             VStack {
-                Text("60")
+                Text("\(timerManager.secondsLeft)")
                     .font(.system(size: 80))
                     .padding(.top, 80)
                 
-                Image(systemName: timerMode == .running ? "play.circle.fill" : "pause.circle.fill")
+                Image(systemName: timerManager.timerMode == .running ? "pause.circle.fill" : "play.circle.fill")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 200, height: 200)
                     .foregroundColor(.orange)
+                    .onTapGesture(perform: {
+                        timerManager.timerMode == .running ? timerManager.pause() : timerManager.start()
+                    })
                 
-                if timerMode == .paused {
+                if timerManager.timerMode == .paused {
                     Image(systemName: "gobackward")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 100, height: 100)
                         .padding(.top, 40)
+                        .onTapGesture(perform: {
+                            timerManager.reset()
+                        })
                     
                 }
                 
-                if timerMode == .initial {
+                if timerManager.timerMode == .initial {
                     Picker(selection: $selectedPicker, label: Text(""), content: {
                         ForEach(0..<availableMinutes.count) {
                             Text("\(availableMinutes[$0]) min")
@@ -50,6 +58,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(timerManager: TimerManager())
     }
 }
