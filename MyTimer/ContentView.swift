@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var timerMode: TimerMode = .initial
+    
     var body: some View {
         Text("Hello, world!")
             .padding()
