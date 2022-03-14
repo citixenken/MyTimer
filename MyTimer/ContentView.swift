@@ -17,7 +17,8 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("\(timerManager.secondsLeft)")
+//                Text("\(timerManager.secondsLeft)")
+                Text(secondsToMinutesAndSeconds(seconds: timerManager.secondsLeft))
                     .font(.system(size: 80))
                     .padding(.top, 80)
                 
@@ -27,6 +28,9 @@ struct ContentView: View {
                     .frame(width: 200, height: 200)
                     .foregroundColor(.orange)
                     .onTapGesture(perform: {
+                        if timerManager.timerMode == .initial {
+                            timerManager.setTimerLength(minutes: availableMinutes[selectedPicker]*60)
+                        }
                         timerManager.timerMode == .running ? timerManager.pause() : timerManager.start()
                     })
                 
